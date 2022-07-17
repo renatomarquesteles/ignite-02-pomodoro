@@ -1,3 +1,25 @@
 {
-  "extends": "@rocketseat/eslint-config/react"
+  "extends": "@rocketseat/eslint-config/react",
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          // react group
+          ["^react$"],
+          // side effects group
+          ["^\\u0000"],
+          // packages group
+          ["^@?\\w"],
+          // absolute imports group
+          ["^"],
+          // relative imports group
+          ["^\\."],
+          // styles import group
+          ["^\\.\\/(styles)(/.*|$)"]
+        ]
+      }
+    ]
+  }
 }
