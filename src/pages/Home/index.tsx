@@ -32,6 +32,7 @@ interface Cycle {
   task: string
   minutesAmount: number
   startedAt: Date
+  finishedAt?: Date
   interruptedAt?: Date
 }
 
@@ -46,18 +47,38 @@ export const Home = () => {
   })
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+  const secondsLeft = activeCycle ? totalSeconds - secondsPassed : 0
+  const minutesLeft = Math.floor(secondsLeft / 60)
+  const timerSeconds = (secondsLeft % 60).toString().padStart(2, '0')
+  const timerMinutes = minutesLeft.toString().padStart(2, '0')
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>
 
     if (activeCycle) {
       interval = setInterval(() => {
-        setSecondsPassed(differenceInSeconds(new Date(), activeCycle.startedAt))
+        if (secondsLeft > 0) {
+          setSecondsPassed(
+            differenceInSeconds(new Date(), activeCycle.startedAt),
+          )
+        } else {
+          setCycles((state) =>
+            state.map((cycle) => {
+              if (cycle.id === activeCycleId) {
+                return { ...cycle, finishedAt: new Date() }
+              }
+              return cycle
+            }),
+          )
+          setActiveCycleId(null)
+          clearInterval(interval)
+        }
       }, 1000)
     }
 
     return () => clearInterval(interval)
-  }, [activeCycle])
+  }, [activeCycle, activeCycleId, secondsLeft])
 
   const handleCreateNewCycle = (data: NewCycleFormData) => {
     const newCycle: Cycle = {
@@ -86,15 +107,11 @@ export const Home = () => {
     setActiveCycleId(null)
   }
 
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
-  const secondsLeft = activeCycle ? totalSeconds - secondsPassed : 0
-  const minutesLeft = Math.floor(secondsLeft / 60)
-  const timerSeconds = (secondsLeft % 60).toString().padStart(2, '0')
-  const timerMinutes = minutesLeft.toString().padStart(2, '0')
-
   useEffect(() => {
     if (activeCycle) {
       document.title = `${timerMinutes}:${timerSeconds}`
+    } else {
+      document.title = 'Ignite Timer'
     }
   }, [activeCycle, timerSeconds, timerMinutes])
 
