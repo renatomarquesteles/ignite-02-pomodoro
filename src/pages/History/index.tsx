@@ -1,6 +1,14 @@
+import { useContext } from 'react'
+
+import { formatDistanceToNow } from 'date-fns/esm'
+
+import { CyclesContext } from '../../contexts/CyclesContext'
+
 import { HistoryContainer, HistoryList, Status } from './styles'
 
 export const History = () => {
+  const { cycles } = useContext(CyclesContext)
+
   return (
     <HistoryContainer>
       <h1>History</h1>
@@ -16,30 +24,26 @@ export const History = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Task 3</td>
-              <td>20 minutes</td>
-              <td>6 minutes ago</td>
-              <td>
-                <Status status="in-progress">In progress</Status>
-              </td>
-            </tr>
-            <tr>
-              <td>Task 2</td>
-              <td>25 minutes</td>
-              <td>32 minutes ago</td>
-              <td>
-                <Status status="done">Done</Status>
-              </td>
-            </tr>
-            <tr>
-              <td>Task 1</td>
-              <td>30 minutes</td>
-              <td>2 hours ago</td>
-              <td>
-                <Status status="interrupted">Interrupted</Status>
-              </td>
-            </tr>
+            {cycles.map((cycle) => (
+              <tr key={cycle.id}>
+                <td>{cycle.task}</td>
+                <td>{cycle.minutesAmount} minutes</td>
+                <td>
+                  {formatDistanceToNow(cycle.startedAt, { addSuffix: true })}
+                </td>
+                <td>
+                  {cycle.finishedAt && <Status status="done">Done</Status>}
+
+                  {cycle.interruptedAt && (
+                    <Status status="interrupted">Interrupted</Status>
+                  )}
+
+                  {!cycle.finishedAt && !cycle.interruptedAt && (
+                    <Status status="in-progress">In progress</Status>
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </HistoryList>
