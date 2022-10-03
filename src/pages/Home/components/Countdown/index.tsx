@@ -7,9 +7,14 @@ import { CyclesContext } from '../../../../contexts/CyclesContext'
 import { CountdownContainer, Separator } from './styles'
 
 export const Countdown = () => {
-  const [secondsPassed, setSecondsPassed] = useState(0)
   const { activeCycle, activeCycleId, markActiveCycleAsFinished } =
     useContext(CyclesContext)
+  const [secondsPassed, setSecondsPassed] = useState(() => {
+    if (activeCycle)
+      return differenceInSeconds(new Date(), new Date(activeCycle.startedAt))
+
+    return 0
+  })
 
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
   const secondsLeft = activeCycle ? totalSeconds - secondsPassed : 0
@@ -24,7 +29,7 @@ export const Countdown = () => {
       interval = setInterval(() => {
         if (secondsLeft > 0) {
           setSecondsPassed(
-            differenceInSeconds(new Date(), activeCycle.startedAt),
+            differenceInSeconds(new Date(), new Date(activeCycle.startedAt)),
           )
         } else {
           markActiveCycleAsFinished()
