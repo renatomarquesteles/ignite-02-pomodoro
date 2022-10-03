@@ -29,7 +29,9 @@ export const History = () => {
                 <td>{cycle.task}</td>
                 <td>{cycle.minutesAmount} minutes</td>
                 <td>
-                  {formatDistanceToNow(cycle.startedAt, { addSuffix: true })}
+                  {formatDistanceToNow(new Date(cycle.startedAt), {
+                    addSuffix: true,
+                  })}
                 </td>
                 <td>
                   {cycle.finishedAt && <Status status="done">Done</Status>}
