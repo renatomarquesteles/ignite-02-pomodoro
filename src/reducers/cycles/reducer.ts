@@ -1,3 +1,5 @@
+import { ActionTypes } from './actions'
+
 export interface Cycle {
   id: string
   task: string
@@ -11,14 +13,6 @@ interface CyclesState {
   cycles: Cycle[]
   activeCycleId: string | null
 }
-
-/* eslint-disable no-unused-vars */
-export enum ActionTypes {
-  CREATE_NEW_CYCLE = 'CREATE_NEW_CYCLE',
-  STOP_ACTIVE_CYCLE = 'STOP_ACTIVE_CYCLE',
-  MARK_ACTIVE_CYCLE_AS_FINISHED = 'MARK_ACTIVE_CYCLE_AS_FINISHED',
-}
-/* eslint-enable no-unused-vars */
 
 export const cyclesReducer = (state: CyclesState, action: any) => {
   switch (action.type) {
