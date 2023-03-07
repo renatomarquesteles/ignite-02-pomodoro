@@ -8,6 +8,8 @@ export const DefaultLayout = () => {
   return (
     <LayoutContainer>
       <Header />
+
+      {/** The "children-routes" will be inserted in the Outlet component */}
       <Outlet />
     </LayoutContainer>
   )
